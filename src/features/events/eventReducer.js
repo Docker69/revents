@@ -1,15 +1,19 @@
-import { sampleData } from "../../app/api/sampleData";
-import { CREATE_EVENT, DELETE_EVENT, UPDATE_EVENT } from "./eventConstants";
+import {
+  CREATE_EVENT,
+  DELETE_EVENT,
+  FETCH_EVENTS,
+  UPDATE_EVENT,
+} from "./eventConstants";
 
 const initialState = {
-  events: sampleData,
+  events: [],
 };
 
 export default function eventReducer(state = initialState, { type, payload }) {
-  console.log('==> eventReducer');
-  console.log(type);
+  // console.log('==> eventReducer');
+  // console.log(type);
   //payload && console.log(payload);
-  console.log({...state});
+  //console.log({...state});
   switch (type) {
     case CREATE_EVENT:
       return {
@@ -17,13 +21,13 @@ export default function eventReducer(state = initialState, { type, payload }) {
         events: [...state.events, payload],
       };
     case UPDATE_EVENT:
-      console.log({
-        ...state,
-        events: [
-          ...state.events.filter((evt) => evt.id !== payload.id),
-          payload,
-        ],
-      });
+      // console.log({
+      //   ...state,
+      //   events: [
+      //     ...state.events.filter((evt) => evt.id !== payload.id),
+      //     payload,
+      //   ],
+      // });
       return {
         ...state,
         events: [
@@ -35,6 +39,11 @@ export default function eventReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         events: [...state.events.filter((evt) => evt.id !== payload)],
+      };
+    case FETCH_EVENTS:
+      return {
+        ...state,
+        events: payload,
       };
     default:
       return state;

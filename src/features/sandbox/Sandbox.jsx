@@ -8,14 +8,16 @@ import { decrement, increment } from "./testReducer";
 
 export default function Sandbox() {
   const dispatch = useDispatch();
+  const [target, setTarget] = useState(null);
   const data = useSelector((state) => state.test.data);
-  
+  const { loading } = useSelector((state) => state.async);
+
   const defaultProps = {
     center: {
       lat: 59.95,
-      lng: 30.33
+      lng: 30.33,
     },
-    zoom: 11
+    zoom: 11,
   };
 
   const [mapProps, setMapProps] = useState(defaultProps);
@@ -25,12 +27,22 @@ export default function Sandbox() {
       <h1>Testing 123</h1>
       <h3>The data is: {data}</h3>
       <Button
-        onClick={() => dispatch(increment(4))}
+        name='increment'
+        loading={loading && target === "increment"}
+        onClick={(e) => {
+          dispatch(increment(4));
+          setTarget(e.target.name);
+        }}
         color='green'
         content='Increment'
       />
       <Button
-        onClick={() => dispatch(decrement(3))}
+        name='decrement'
+        loading={loading && target === "decrement"}
+        onClick={(e) => {
+          dispatch(decrement(3));
+          setTarget(e.target.name);
+        }}
         color='red'
         content='Decrement'
       />
@@ -41,9 +53,9 @@ export default function Sandbox() {
         color='teal'
         content='Open Modal'
       />
-      <div style={{marginTop: 15}}>
-        <TestPlaceInput setMapProps={setMapProps}/>
-        <TestMap mapProps={mapProps}/>
+      <div style={{ marginTop: 15 }}>
+        <TestPlaceInput setMapProps={setMapProps} />
+        <TestMap mapProps={mapProps} />
       </div>
     </>
   );
