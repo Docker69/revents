@@ -10,10 +10,8 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { configureStore } from "./app/store/configureStore";
 import ScrollToTop from "./app/layout/ScrollToTop";
-import { fetchEvents } from "./features/events/eventActions";
 
 const store = configureStore();
-store.dispatch(fetchEvents());
 const rootEl = document.getElementById("root");
 
 function render() {

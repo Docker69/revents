@@ -47,3 +47,11 @@ export function fetchEvents() {
     }
   };
 }
+
+export function listenToEvents(events) {
+  return {
+    type: FETCH_EVENTS,
+    payload: events,
+  };
+}
+
