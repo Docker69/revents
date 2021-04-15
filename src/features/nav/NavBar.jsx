@@ -8,6 +8,7 @@ import SignedOutMenu from "./SignedOutMenu";
 export default function NavBar({ setFormOpen }) {
   const { authenticated } = useSelector((state) => state.auth);
 
+  console.log('=====> NavBar, authenticated: ' + authenticated)
   return (
     <Menu inverted fixed='top'>
       <Container>
