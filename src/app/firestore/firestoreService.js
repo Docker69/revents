@@ -6,13 +6,22 @@ const db = firebase.firestore();
 export function dataFromSnapshot(snapshot) {
   if (!snapshot.exists) return undefined;
   const data = snapshot.data();
+
+  for (const prop in data) {
+    if (data.hasOwnProperty(prop)) {
+      if (data[prop] instanceof firebase.firestore.Timestamp) {
+        data[prop] = data[prop].toDate();
+      }
+    }
+  }
+
   return {
     ...data,
     id: snapshot.id,
-    date:
-      data["date"] instanceof firebase.firestore.Timestamp
-        ? data["date"].toDate()
-        : null,
+    // date:
+    //   data["date"] instanceof firebase.firestore.Timestamp
+    //     ? data["date"].toDate()
+    //     : null,
   };
 }
 
@@ -52,10 +61,31 @@ export function cancelEventToggle(event) {
 }
 
 export function setUserProfileData(user) {
-  return db.collection("users").doc(user.uid).set({
-    displayName: user.displayName,
-    email: user.email,
-    photoURL: user.photoURL || null,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-  });
+  return db
+    .collection("users")
+    .doc(user.uid)
+    .set({
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL || null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+}
+
+export function getUserProfile(userID) {
+  return db.collection("users").doc(userID);
+}
+
+export async function updateUserProfile(profile) {
+  const user = firebase.auth().currentUser;
+  try {
+    if (user.displayName !== profile.displayName) {
+      await user.updateProfile({
+        displayName: profile.displayName,
+      });
+    }
+    return await db.collection("users").doc(user.uid).update(profile);
+  } catch (error) {
+    throw error;
+  }
 }
