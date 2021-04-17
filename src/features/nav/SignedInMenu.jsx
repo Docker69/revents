@@ -27,7 +27,7 @@ export default function SignedInMenu() {
         spaced='right'
         src={currentUserProfile?.photoURL || "/assets/user.png"}
       />
-      <Dropdown pointing='top left' text={currentUserProfile.displayName}>
+      <Dropdown pointing='top left' text={currentUserProfile?.displayName}>
         <Dropdown.Menu>
           <Dropdown.Item
             as={Link}
@@ -35,7 +35,7 @@ export default function SignedInMenu() {
             text='Create Event'
             icon='plus'
           />
-          <Dropdown.Item as={Link} to={`/profile/${currentUserProfile.id}`} text='My Profile' icon='user' />
+          <Dropdown.Item as={Link} to={`/profile/${currentUserProfile?.id}`} text='My Profile' icon='user' />
           <Dropdown.Item as={Link} to='/account' text='My Account' icon='settings' />
           <Dropdown.Item onClick={handleSignout} text='Logout' icon='power' />
         </Dropdown.Menu>
