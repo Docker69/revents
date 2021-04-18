@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
 import { listenToEventFromFirestore } from "../../../app/firestore/firestoreService";
 import useFirestoreDoc from "../../../app/hooks/useFirestoreDoc";
-import { listenToEvents } from "../eventActions";
+import { listenToSelectedEvent } from "../eventActions";
 import EventDetailedChat from "./EventDetailedChat";
 import EventDetailedHeader from "./EventDetailedHeader";
 import EventDetailedInfo from "./EventDetailedInfo";
@@ -14,9 +14,7 @@ import { Redirect } from "react-router";
 export default function EventDetailedPage({ match }) {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.auth);
-  const event = useSelector((state) =>
-    state.event.events.find((e) => e.id === match.params.id)
-  );
+  const event = useSelector((state) => state.event.selectedEvent);
 
   const { loading, error } = useSelector((state) => state.async);
   const isHost = event?.hostUid === currentUser.uid;
@@ -24,7 +22,7 @@ export default function EventDetailedPage({ match }) {
 
   useFirestoreDoc({
     query: () => listenToEventFromFirestore(match.params.id),
-    data: (event) => dispatch(listenToEvents([event])),
+    data: (event) => dispatch(listenToSelectedEvent(event)),
     deps: [match.params.id, dispatch],
   });
 
