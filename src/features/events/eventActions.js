@@ -6,6 +6,9 @@ import {
   LISTEN_TO_EVENT_CHAT,
   LISTEN_TO_SELECTED_EVENT,
   UPDATE_EVENT,
+  SET_FILTER,
+  SET_START_DATE,
+  CLEAR_SELECTED_EVENT,
 } from "./eventConstants";
 import {
   asyncActionError,
@@ -40,21 +43,21 @@ export function deleteEvent(eventId) {
   };
 }
 
-export function fetchEvents(predicate, limit, lastDocSnapshot) {
+export function fetchEvents(filter, startDate, limit, lastDocSnapshot) {
   return async function (dispatch) {
     dispatch(asyncActionStart());
     try {
       const snapshot = await fetchEventsFromFirestore(
-        predicate,
+        filter,
+        startDate,
         limit,
         lastDocSnapshot
-      ).get();
+     ).get();
       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
       const moreEvents = snapshot.docs.length >= limit;
       const events = snapshot.docs.map((doc) => dataFromSnapshot(doc));
-      dispatch({ type: FETCH_EVENTS, payload: { events, moreEvents } });
+      dispatch({ type: FETCH_EVENTS, payload: { events, moreEvents, lastVisible } });
       dispatch(asyncActionFinish());
-      return lastVisible;
     } catch (error) {
       dispatch(asyncActionError(error));
       toast.error(error);
@@ -62,11 +65,31 @@ export function fetchEvents(predicate, limit, lastDocSnapshot) {
   };
 }
 
+export function setFilter(value) {
+  return function(dispatch) {
+    dispatch(clearEvents());
+    dispatch({type: SET_FILTER, payload: value})
+  }
+}
+
+export function setStartDate(date) {
+  return function(dispatch) {
+    dispatch(clearEvents());
+    dispatch({type: SET_START_DATE, payload: date})
+  }
+}
+
 export function listenToSelectedEvent(event) {
   return {
     type: LISTEN_TO_SELECTED_EVENT,
     payload: event,
   };
+}
+
+export function clearSelectedEvent() {
+  return {
+    type: CLEAR_SELECTED_EVENT
+  }
 }
 
 export function clearEvents() {
